@@ -15,7 +15,7 @@ const TaskInputForm: React.FC<Props> = ({ taskTitle, setTaskTitle, handleAddTask
       value={taskTitle}
       onChange={(e) => setTaskTitle(e.target.value)}
     />
-    <Button type="submit">Add</Button>
+    <Button type="submit" disabled={taskTitle?.length == 0}>Add</Button>
   </form>
 );
 
