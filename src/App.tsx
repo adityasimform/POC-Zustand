@@ -4,6 +4,7 @@ import { Dashboard } from "./pages/Dashboard";
 import LoginPage from "./pages/LoginPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { useAuthStore } from "./stores/authStore";
+import Layout from "./Layout";
 
 function App() {
   const { isLoggedIn } = useAuthStore();
@@ -15,13 +16,12 @@ function App() {
           element={isLoggedIn ? <Navigate to="/" replace /> : <LoginPage />}
         />
 
-        {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
-          <Route path="/" element={<Dashboard />} />
-          {/* Add more protected routes here */}
+         <Route element={<Layout />}>
+            <Route path="/" element={<Dashboard />} />
+          </Route>
         </Route>
 
-        {/* Fallback Route */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
