@@ -1,18 +1,19 @@
-import { useUIStore } from "../stores/uiStore";
-import {SunMoon, MoonStar} from "lucide-react";
+import { SunMoon, MoonStar } from "lucide-react";
+import { useStore } from "../stores/store";
 
 const Topbar = () => {
-  const { darkMode, toggleTheme } = useUIStore();
+  const { darkMode, toggleTheme } = useStore();
 
   return (
     <div className="flex justify-between items-center px-6 py-4 bg-gray-200 dark:bg-gray-800">
-      <h1 className="text-xl font-bold text-gray-900 dark:text-white">Zustask</h1>
+      <h1 className="text-xl font-bold text-gray-900 dark:text-white">
+        Zustask
+      </h1>
       <button
         onClick={toggleTheme}
         className=" text-gray-900 dark:text-white px-4 py-2 rounded"
       >
-       
-         {darkMode ? <MoonStar /> :  <SunMoon />} 
+        {darkMode ? <MoonStar /> : <SunMoon />}
       </button>
     </div>
   );

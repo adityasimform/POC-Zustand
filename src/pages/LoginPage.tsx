@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Input from "../atoms/Input";
 import Button from "../atoms/Button";
-import { useAuthStore } from "../stores/authStore";
 import { useNavigate, redirect } from "react-router";
+import { useStore } from "../stores/store";
 
 const LoginPage: React.FC = () => {
-  const { login, isLoggedIn } = useAuthStore();
+  const { login, isLoggedIn } = useStore();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);

@@ -3,11 +3,11 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import { Dashboard } from "./pages/Dashboard";
 import LoginPage from "./pages/LoginPage";
 import ProtectedRoute from "./components/ProtectedRoute";
-import { useAuthStore } from "./stores/authStore";
 import Layout from "./Layout";
+import { useStore } from "./stores/store";
 
 function App() {
-  const { isLoggedIn } = useAuthStore();
+  const { isLoggedIn } = useStore();
   return (
     <BrowserRouter>
       <Routes>
@@ -17,7 +17,7 @@ function App() {
         />
 
         <Route element={<ProtectedRoute />}>
-         <Route element={<Layout />}>
+          <Route element={<Layout />}>
             <Route path="/" element={<Dashboard />} />
           </Route>
         </Route>

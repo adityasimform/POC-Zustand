@@ -1,15 +1,15 @@
 import { useEffect } from "react";
-import { useUIStore } from "../stores/uiStore";
+import { useStore } from "../stores/store";
 
 export const ThemeWatcher = () => {
-  const darkMode = useUIStore((s) => s.darkMode);
+  const { darkMode } = useStore();
 
   useEffect(() => {
     const root = document.documentElement;
     if (darkMode) {
-      root.classList.add('dark');
+      root.classList.add("dark");
     } else {
-      root.classList.remove('dark');
+      root.classList.remove("dark");
     }
   }, [darkMode]);
 

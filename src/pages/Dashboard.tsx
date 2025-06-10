@@ -1,24 +1,36 @@
-import { useState } from 'react';
-import { useTaskStore } from '../stores/taskStore';
-import TaskInputForm from '../organisms/TaskInputForm';
-import FilterControls from '../molecules/FilterControls';
-import TaskList from '../organisms/TaskList';
+import { useState } from "react";
+import TaskInputForm from "../organisms/TaskInputForm";
+import FilterControls from "../molecules/FilterControls";
+import TaskList from "../organisms/TaskList";
+import { useStore } from "../stores/store";
 
 export const Dashboard = () => {
-  const [taskTitle, setTaskTitle] = useState('');
-  const { tasks, addTask, toggleTask, deleteTask, filter, setFilter , editTask} = useTaskStore();
+  const [taskTitle, setTaskTitle] = useState("");
+  const [priority, setPriority] = useState("");
+  const [dueDate, setDueDate] = useState("");
+  const {
+    tasks,
+    addTask,
+    toggleTask,
+    deleteTask,
+    filter,
+    setFilter,
+    editTask,
+  } = useStore();
 
   const filteredTasks = tasks.filter((task) => {
-    if (filter === 'active') return !task.completed;
-    if (filter === 'done') return task.completed;
+    if (filter === "active") return !task.completed;
+    if (filter === "done") return task.completed;
     return true;
   });
 
   const handleAddTask = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!taskTitle.trim()) return;
-    addTask(taskTitle);
-    setTaskTitle('');
+    if (!taskTitle.trim() || !priority.trim() || !dueDate.trim()) return;
+    addTask({ title: taskTitle, meta: { priority, dueDate } });
+    setTaskTitle("");
+    setPriority("");
+    setDueDate("");
   };
 
   return (
@@ -34,6 +46,10 @@ export const Dashboard = () => {
         <TaskInputForm
           taskTitle={taskTitle}
           setTaskTitle={setTaskTitle}
+          priority={priority}
+          setPriority={setPriority}
+          dueDate={dueDate}
+          setDueDate={setDueDate}
           handleAddTask={handleAddTask}
         />
 
@@ -47,6 +63,5 @@ export const Dashboard = () => {
         />
       </div>
     </main>
-
   );
 };
