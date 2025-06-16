@@ -5,6 +5,7 @@ import LoginPage from "./pages/LoginPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Layout from "./Layout";
 import { useStore } from "./stores/store";
+import ProductPage from "./pages/Products";
 
 function App() {
   const { isLoggedIn } = useStore();
@@ -19,6 +20,7 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route element={<Layout />}>
             <Route path="/" element={<Dashboard />} />
+            <Route path="/products" element={<ProductPage />} />
           </Route>
         </Route>
 
