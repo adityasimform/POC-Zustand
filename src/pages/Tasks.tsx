@@ -4,7 +4,7 @@ import FilterControls from "../molecules/FilterControls";
 import TaskList from "../organisms/TaskList";
 import { useStore } from "../stores/store";
 
-export const Dashboard = () => {
+export const Tasks = () => {
   const [taskTitle, setTaskTitle] = useState("");
   const [priority, setPriority] = useState("");
   const [dueDate, setDueDate] = useState("");
