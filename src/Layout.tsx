@@ -7,9 +7,9 @@ const Layout = () => {
 
   return (
     <div className={darkMode ? "dark" : ""}>
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white ">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
         <Topbar />
-        <main className="mt-6 max-w-7xl mx-auto p-4">
+        <main className="mt-6 mx-auto p-4 sm:max-w-[640px] md:max-w-[768px] lg:max-w-[1024px] xl:max-w-[1280px] 2xl:max-w-[1720px]">
           <Outlet />
         </main>
       </div>
