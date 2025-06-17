@@ -22,22 +22,35 @@ export interface productsState {
   deleteProduct: (id: number) => void;
   updateProduct: (product: Product) => void;
   addProduct: (product: Product) => void;
+  page: number;
+  hasMore: boolean;
 }
 
-export const createProductSlice: StateCreator<productsState> = (set) => ({
+export const createProductSlice: StateCreator<productsState> = (set, get) => ({
   products: [],
   loading: false,
   error: null,
+  page: 0,
+  hasMore: true,
 
-  fetchProducts: async (start = 0, end = 10) => {
+  fetchProducts: async () => {
+    const { page, loading, hasMore } = get();
+    if (loading || !hasMore) return;
     set({ loading: true, error: null });
     try {
+      const nextPage = page + 1;
       const res = await fetch(
-        `http://localhost:5000/products?_start=${start}&_end=${end}`
+        `http://localhost:5000/products?_page=${nextPage}`
       );
-      const products: Product[] = await res.json();
-      console.log("Fetched products:", products);
-      set({ products: products, loading: false });
+      const data = await res.json();
+      const newData: Product[] = data.data;
+
+      set({
+        products: [...get().products, ...newData],
+        page: nextPage,
+        hasMore: data.next !== null,
+        loading: false,
+      });
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : "Failed to load products";
