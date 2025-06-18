@@ -1,7 +1,7 @@
 import { Navigate } from "react-router";
 
 const Home = () => {
-  return <Navigate to="/tasks" replace />;
+  return <Navigate to="/products" replace />;
 };
 
 export default Home;

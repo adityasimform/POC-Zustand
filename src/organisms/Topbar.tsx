@@ -17,16 +17,6 @@ const Topbar = () => {
       </div>
         <nav className="flex space-x-4">
           <Link
-            to="/tasks"
-            className={`px-3 py-1 rounded-md text-sm font-medium transition ${
-              isActive("/tasks")
-                ? "bg-indigo-600 text-white"
-                : "text-gray-700 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400"
-            }`}
-          >
-            Tasks
-          </Link>
-          <Link
             to="/products"
             className={`px-3 py-1 rounded-md text-sm font-medium transition ${
               isActive("/products")
