@@ -2,23 +2,17 @@ import React, { useState } from "react";
 import Button from "../atoms/Button";
 import { SquarePen, Trash2 } from "lucide-react";
 import type { Task } from "../stores/slices/taskSlice";
+import { useStore } from "../stores/store";
 
 interface Props {
   tasks: Task[];
-  toggleTask: (id: string) => void;
-  deleteTask: (id: string) => void;
-  editTask: (
-    task: { title: string; meta: { priority: string; dueDate: string } },
-    id: string
-  ) => void;
 }
 
-const TaskList: React.FC<Props> = ({
-  tasks,
-  toggleTask,
-  deleteTask,
-  editTask,
-}) => {
+const TaskList: React.FC<Props> = ({tasks}) => {
+    const toggleTask = useStore((state) => state.toggleTask);
+    const deleteTask = useStore((state) => state.deleteTask);
+    const editTask = useStore((state) => state.editTask);
+
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editedTitle, setEditedTitle] = useState("");
   const [editedPriority, setEditedPriority] = useState("");

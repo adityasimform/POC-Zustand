@@ -1,14 +1,16 @@
 import React from "react";
 import { Trash2, ShoppingCart } from "lucide-react";
 import type { Product } from "../stores/slices/productsSlice";
+import { useStore } from "../stores/store";
 
 interface ProductCardProps {
   product: Product;
-  onDelete: () => void;
-  onAddToCart: () => void;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, onDelete, onAddToCart }) => {
+const ProductCard: React.FC<ProductCardProps> = ({product}) => {
+  const  onAddToCart  = useStore((state) => state.addToCart);
+  const  onDelete  = useStore((state) => state.deleteProduct);
+
   return (
     <div className="bg-white rounded-2xl shadow-md hover:shadow-lg p-4 flex flex-col transition-transform hover:scale-[1.02] duration-200 h-full relative">
       <img
@@ -48,7 +50,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onDelete, onAddToCar
 
       <div className="absolute top-3 right-3 flex gap-2">
         <button
-          onClick={onDelete}
+          onClick={() =>onDelete(product.id)}
           className="bg-gray-100 hover:bg-red-500 hover:text-white text-gray-700 transition-colors p-2 rounded-full z-10"
           title="Delete"
         >
@@ -56,7 +58,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onDelete, onAddToCar
         </button>
 
         <button
-          onClick={onAddToCart}
+          onClick={() => onAddToCart(product)}
           className="bg-gray-100 hover:bg-green-500 hover:text-white text-gray-700 transition-colors p-2 rounded-full z-10"
           title="Add to Cart"
         >
