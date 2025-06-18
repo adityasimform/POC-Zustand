@@ -3,7 +3,7 @@ import Topbar from "./organisms/Topbar";
 import { useStore } from "./stores/store";
 
 const Layout = () => {
-  const { darkMode } = useStore();
+  const darkMode  = useStore(state=> state.darkMode);
 
   return (
     <div className={darkMode ? "dark" : ""}>

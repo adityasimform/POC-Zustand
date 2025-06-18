@@ -1,37 +1,18 @@
-import { useState } from "react";
 import TaskInputForm from "../organisms/TaskInputForm";
 import FilterControls from "../molecules/FilterControls";
 import TaskList from "../organisms/TaskList";
 import { useStore } from "../stores/store";
 
 export const Tasks = () => {
-  const [taskTitle, setTaskTitle] = useState("");
-  const [priority, setPriority] = useState("");
-  const [dueDate, setDueDate] = useState("");
-  const {
-    tasks,
-    addTask,
-    toggleTask,
-    deleteTask,
-    filter,
-    setFilter,
-    editTask,
-  } = useStore();
+    const tasks = useStore((state) => state.tasks);
+    const filter = useStore((state) => state.filter);
+    const setFilter = useStore((state) => state.setFilter);
 
   const filteredTasks = tasks.filter((task) => {
     if (filter === "active") return !task.completed;
     if (filter === "done") return task.completed;
     return true;
   });
-
-  const handleAddTask = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!taskTitle.trim() || !priority.trim() || !dueDate.trim()) return;
-    addTask({ title: taskTitle, meta: { priority, dueDate } });
-    setTaskTitle("");
-    setPriority("");
-    setDueDate("");
-  };
 
   return (
     <main className="max-w-4xl mx-auto px-4">
@@ -43,24 +24,11 @@ export const Tasks = () => {
           </span>
         </h1>
 
-        <TaskInputForm
-          taskTitle={taskTitle}
-          setTaskTitle={setTaskTitle}
-          priority={priority}
-          setPriority={setPriority}
-          dueDate={dueDate}
-          setDueDate={setDueDate}
-          handleAddTask={handleAddTask}
-        />
+        <TaskInputForm />
 
         <FilterControls filter={filter} setFilter={setFilter} />
 
-        <TaskList
-          tasks={filteredTasks}
-          toggleTask={toggleTask}
-          deleteTask={deleteTask}
-          editTask={editTask}
-        />
+        <TaskList tasks={filteredTasks} />
       </div>
     </main>
   );

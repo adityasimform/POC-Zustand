@@ -9,19 +9,11 @@ import FeaturedProducts from "../components/FeaturedProducts";
 const PREFETCH_OFFSET = 1;
 
 const ProductPage = () => {
-  const {
-    products,
-    fetchProducts,
-    deleteProduct,
-    cart,
-    addToCart,
-    increaseQuantity,
-    decreaseQuantity,
-    removeFromCart,
-    loading,
-    error,
-    hasMore,
-  } = useStore((state) => state);
+  const products = useStore((state) => state.products);
+  const fetchProducts = useStore((state) => state.fetchProducts);
+  const loading = useStore((state) => state.loading);
+  const error = useStore((state) => state.error);
+  const hasMore = useStore((state) => state.hasMore);
 
   useEffect(() => {
     if (!products.length && !loading && !error) {
@@ -123,8 +115,6 @@ const ProductPage = () => {
                             <div style={style} className="p-2 h-full">
                               <ProductCard
                                 product={product}
-                                onDelete={() => deleteProduct(product.id)}
-                                onAddToCart={() => addToCart(product)}
                               />
                             </div>
                           );
@@ -142,12 +132,7 @@ const ProductPage = () => {
         </div>
 
         <aside className="col-span-12 lg:col-span-3 bg-white p-6 rounded-2xl shadow-md">
-          <FeaturedProducts
-            cartItems={cart}
-            onIncreaseQuantity={increaseQuantity}
-            onDecreaseQuantity={decreaseQuantity}
-            onRemoveFromCart={removeFromCart}
-          />
+          <FeaturedProducts />
         </aside>
       </div>
     </div>

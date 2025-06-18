@@ -1,6 +1,6 @@
 import React from 'react';
 import Button from '../atoms/Button';
-import type { TaskFilter } from '../stores/taskStore';
+import type { TaskFilter } from '../stores/slices/taskSlice';
 
 interface Props {
   filter: TaskFilter;

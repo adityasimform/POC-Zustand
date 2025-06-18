@@ -9,7 +9,8 @@ import ProductPage from "./pages/Products";
 import Home from "./pages/Home";
 
 function App() {
-  const { isLoggedIn } = useStore();
+  const isLoggedIn = useStore((state) => state.isLoggedIn);
+
   return (
     <BrowserRouter>
       <Routes>

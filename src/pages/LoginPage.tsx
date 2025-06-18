@@ -5,7 +5,9 @@ import { useNavigate, redirect } from "react-router";
 import { useStore } from "../stores/store";
 
 const LoginPage: React.FC = () => {
-  const { login, isLoggedIn } = useStore();
+  const login = useStore((state) => state.login);
+  const isLoggedIn = useStore((state) => state.isLoggedIn);
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);

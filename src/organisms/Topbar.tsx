@@ -3,7 +3,9 @@ import { useStore } from "../stores/store";
 import { Link, useLocation } from "react-router";
 
 const Topbar = () => {
-  const { darkMode, toggleTheme } = useStore();
+  const darkMode = useStore(state => state.darkMode);
+  const toggleTheme = useStore(state => state.toggleTheme);
+
   const location = useLocation();
 
   const isActive = (path: string) => location.pathname === path;

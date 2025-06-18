@@ -1,20 +1,13 @@
 import React from "react";
 import { Plus, Minus, Trash2 } from "lucide-react";
-import type { Product } from "../stores/slices/productsSlice";
+import { useStore } from "../stores/store";
 
-interface FeaturedProductsProps {
-  cartItems: Array<Product & { quantity: number }>;
-  onIncreaseQuantity: (id: number) => void;
-  onDecreaseQuantity: (id: number) => void;
-  onRemoveFromCart: (id: number) => void;
-}
+const FeaturedProducts: React.FC = () => {
+  const  onDecreaseQuantity  = useStore((state) => state.decreaseQuantity);
+  const  onIncreaseQuantity  = useStore((state) => state.increaseQuantity);
+  const  onRemoveFromCart  = useStore((state) => state.removeFromCart);
+  const  cartItems  = useStore((state) => state.cart);
 
-const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
-  cartItems,
-  onIncreaseQuantity,
-  onDecreaseQuantity,
-  onRemoveFromCart,
-}) => {
   return (
     <div className="bg-white rounded-2xl shadow-md p-4">
       <h2 className="text-lg font-semibold text-gray-700 mb-3">
