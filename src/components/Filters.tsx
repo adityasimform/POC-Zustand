@@ -3,10 +3,10 @@ import React from "react";
 const Filters: React.FC = () => {
   return (
     <div>
-      <h2 className="text-xl font-semibold text-gray-700 mb-4">Filters</h2>
+      <h2 className="text-xl font-semibold text-gray-700 mb-4 dark:bg-gray-800 dark:text-white">Filters</h2>
       <div className="space-y-4">
         <label className="block">
-          <span className="text-sm text-gray-600">Category</span>
+          <span className="text-sm text-gray-600 dark:bg-gray-800 dark:text-white">Category</span>
           <select className="w-full border rounded-md p-2 mt-1 focus:ring focus:ring-indigo-300">
             <option>All</option>
             <option>Audio</option>
@@ -14,7 +14,7 @@ const Filters: React.FC = () => {
           </select>
         </label>
         <label className="block">
-          <span className="text-sm text-gray-600">Price Range</span>
+          <span className="text-sm text-gray-600 dark:bg-gray-800 dark:text-white">Price Range</span>
           <input type="range" className="w-full mt-2 accent-indigo-500" />
         </label>
       </div>

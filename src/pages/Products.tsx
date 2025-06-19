@@ -43,18 +43,18 @@ const ProductPage = () => {
   };
 
   return (
-    <div className="p-6 bg-gradient-to-br from-gray-100 to-gray-200 min-h-screen font-sans">
-      <h1 className="text-4xl font-bold text-gray-800 mb-8 text-center">
+    <div className="p-6 min-h-screen font-sans  dark:bg-gray-800 dark:bg-none">
+      <h1 className="text-4xl font-bold text-gray-800 mb-8 text-center dark:bg-gray-800 dark:text-white">
         🛒 Explore Products
       </h1>
 
-      <div className="grid grid-cols-12 gap-4">
-        <aside className="col-span-12 lg:col-span-2 bg-white p-6 rounded-2xl shadow-md">
+      <div className="grid grid-cols-12 gap-4 ">
+        <aside className="col-span-12 lg:col-span-2 bg-white dark:bg-gray-800 dark:text-white p-6 rounded-2xl shadow-md">
           <Filters />
         </aside>
 
         <div className="flex flex-col w-full col-span-12 lg:col-span-7">
-          <div className="h-[80vh] overflow-y-auto max-h-[80vh] pr-2">
+          <div className="h-[80vh] overflow-y-auto max-h-[80vh] pr-2 dark:scrollbar-dark">
             {error && (
               <div className="flex flex-col items-center justify-center text-center bg-red-50 border border-red-200 text-red-700 px-6 py-10 rounded-xl shadow-md mb-8 max-w-xl mx-auto">
                 <svg
@@ -131,7 +131,7 @@ const ProductPage = () => {
           </div>
         </div>
 
-        <aside className="col-span-12 lg:col-span-3 bg-white p-6 rounded-2xl shadow-md">
+        <aside className="col-span-12 lg:col-span-3 bg-white p-6 rounded-2xl shadow-md  dark:bg-gray-800 ">
           <FeaturedProducts />
         </aside>
       </div>
