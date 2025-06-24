@@ -58,20 +58,66 @@ export const createProductSlice: StateCreator<productsState> = (set, get) => ({
       set({ error: message, loading: false });
     }
   },
-  deleteProduct: (id) =>
-    set((state) => ({
-      products: state.products.filter((product) => product.id !== id),
-    })),
+  deleteProduct: async (id: number) => {
+    set({ loading: true, error: null });
+    try {
+      const res = await fetch(`http://localhost:5000/products/${id}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) throw new Error("Failed to delete product");
+      set((state) => ({
+        products: state.products.filter((product) => product.id !== id),
+        loading: false,
+      }));
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : "Failed to delete product";
+      set({ error: message, loading: false });
+    }
+  },
 
-  updateProduct: (updated) =>
-    set((state) => ({
-      products: state.products.map((p) => (p.id === updated.id ? updated : p)),
-    })),
 
-  addProduct: (product) =>
-    set((state) => ({
-      products: [...state.products, product],
-    })),
+  updateProduct: async (updated: Product) => {
+    set({ loading: true, error: null });
+    try {
+      const res = await fetch(`http://localhost:5000/products/${updated.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updated),
+      });
+      if (!res.ok) throw new Error("Failed to update product");
+      const data: Product = await res.json();
+      set((state) => ({
+        products: state.products.map((p) => (p.id === data.id ? data : p)),
+        loading: false,
+      }));
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : "Failed to update product";
+      set({ error: message, loading: false });
+    }
+  },
+
+  addProduct: async (product: Product) => {
+    set({ loading: true, error: null });
+    try {
+      const res = await fetch(`http://localhost:5000/products`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(product),
+      });
+      if (!res.ok) throw new Error("Failed to add product");
+      const data: Product = await res.json();
+      set((state) => ({
+        products: [...state.products, data],
+        loading: false,
+      }));
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : "Failed to add product";
+      set({ error: message, loading: false });
+    }
+  },
   resetProducts: () =>
     set(() => ({
       products: [],

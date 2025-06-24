@@ -14,3 +14,16 @@ textarea:-webkit-autofill,
 select:-webkit-autofill {
 	-webkit-background-clip: text;
 }
+
+body, #root, .app {
+  user-select: none;
+  -webkit-user-select: none; 
+  -ms-user-select: none;   
+}
+
+
+.card, button, .no-select {
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}

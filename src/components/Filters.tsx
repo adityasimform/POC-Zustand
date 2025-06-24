@@ -21,14 +21,16 @@ const FilterSidebar = () => {
   );
 
   return (
-    <aside className="col-span-12 lg:col-span-2 bg-white dark:bg-[#23272f] dark:border dark:border-gray-700 p-6 rounded-2xl shadow-xl">
+   <aside className="col-span-12 lg:col-span-2 p-6  select-none">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-bold text-gray-700 dark:text-gray-100">
           Filters
         </h2>
         <button
-          className="text-sm text-indigo-600 dark:text-indigo-400 hover:underline"
+          className="text-sm text-indigo-600 dark:text-indigo-400 hover:underline focus:outline-none focus:ring-2 focus:ring-indigo-400 rounded cursor-pointer"
           onClick={clearFilters}
+          type="button"
+          tabIndex={0}
         >
           Reset
         </button>
@@ -36,7 +38,10 @@ const FilterSidebar = () => {
 
       <div className="mb-6">
         <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
-          Max Price: ₹{priceRange[1]}
+          Max Price:{" "}
+          <span className="font-semibold text-indigo-600 dark:text-indigo-400">
+            ₹{priceRange[1]}
+          </span>
         </label>
         <input
           type="range"
@@ -46,7 +51,7 @@ const FilterSidebar = () => {
           onChange={(e) =>
             setFilters({ priceRange: [0, parseInt(e.target.value)] })
           }
-          className="w-full accent-indigo-500"
+          className="w-full accent-indigo-500 cursor-pointer"
         />
       </div>
 
@@ -54,11 +59,11 @@ const FilterSidebar = () => {
         <h3 className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-2">
           Brands
         </h3>
-        <div className="space-y-1 max-h-[150px] overflow-auto">
+        <div className="space-y-1 max-h-[150px] overflow-auto pr-1 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-700 dark:scrollbar-track-gray-900">
           {uniqueBrands?.map((brand) => (
             <label
               key={brand}
-              className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200"
+              className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200 cursor-pointer"
             >
               <input
                 type="checkbox"
@@ -69,6 +74,8 @@ const FilterSidebar = () => {
                     : selectedBrands.filter((b) => b !== brand);
                   setFilters({ selectedBrands: newSelection });
                 }}
+                className="accent-indigo-500 cursor-pointer"
+                tabIndex={0}
               />
               <span className="capitalize">{brand}</span>
             </label>
@@ -85,10 +92,11 @@ const FilterSidebar = () => {
           value={minDiscount}
           min={0}
           max={100}
-          className="w-full border rounded px-2 py-1 text-sm dark:bg-gray-700 dark:text-white dark:border-gray-600"
+          className="w-full border rounded px-2 py-1 text-sm dark:bg-gray-700 dark:text-white dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-400"
           onChange={(e) =>
             setFilters({ minDiscount: parseInt(e.target.value) })
           }
+          tabIndex={0}
         />
       </div>
     </aside>

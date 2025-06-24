@@ -7,6 +7,8 @@ import FeaturedProducts from "../components/FeaturedProducts";
 import FilterSidebar from "../components/Filters";
 import type { Product } from "../stores/slices/productsSlice";
 import { AddProductButton } from "../components/AddProductModal";
+import AddProductModal from "../components/AddProductModal";
+import { Plus } from "lucide-react";
 
 const PREFETCH_OFFSET = 1;
 
@@ -21,6 +23,8 @@ const ProductPage = () => {
   const minDiscount = useStore((state) => state.minDiscount);
 
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editProduct, setEditProduct] = useState<Product | null>(null);
 
   useEffect(() => {
     if (!products.length && !loading && !error) {
@@ -69,15 +73,42 @@ const ProductPage = () => {
 
   const displayProducts = isFiltering ? filteredProducts : products;
 
+  const getProductForm = (product: Product) => ({
+    ...product,
+    price: String(product.price),
+    discount: String(product.discount),
+    description: product.description ?? "",
+    model: product.model ?? "",
+    color: product.color ?? "",
+    category: product.category ?? "",
+  });
+
   return (
-    <div className="p-6 min-h-screen font-sans bg-gray-100 dark:bg-[#181c23]">
-      <h1 className="text-4xl font-bold text-gray-800 mb-8 text-center dark:text-white rounded-2xl py-4 shadow">
+    <div className="p-6 min-h-screen font-sans">
+      <h1 className="text-4xl font-bold text-gray-800 mb-8 text-center dark:text-white rounded-2xl py-4 ">
         🛒 Explore Products
       </h1>
       <AddProductButton />
 
+      <button
+        className="fixed bottom-8 right-8 bg-indigo-600 hover:bg-indigo-700 text-white p-4 rounded-full shadow-xl z-50 flex items-center justify-center cursor-pointer transition-transform transform hover:scale-105"
+        onClick={() => {
+          setEditProduct(null);
+          setModalOpen(true);
+        }}
+        title="Add Product"
+      >
+        <Plus className="w-6 h-6" />
+      </button>
+      <AddProductModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        initialData={editProduct ? getProductForm(editProduct) : null}
+        mode={editProduct ? "edit" : "add"}
+      />
+
       <div className="grid grid-cols-12 gap-6 dark:shadow-gray-900">
-        <aside className="col-span-12 lg:col-span-2 bg-white dark:bg-[#23272f] dark:border dark:border-gray-700 p-6 rounded-2xl shadow-xl">
+        <aside className="col-span-12 lg:col-span-2  dark:bg-[#23272f] dark:border dark:border-gray-700  rounded-2xl shadow-xl bg-gradient-to-br from-indigo-50 via-white to-indigo-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 border border-indigo-100 dark:border-gray-700 rounded-2xl shadow-xl select-none">
           <FilterSidebar />
         </aside>
 
@@ -150,13 +181,14 @@ const ProductPage = () => {
                           const product = displayProducts[idx];
                           if (!product) return null;
                           return (
-                            <div
-                              style={{
-                                ...style,
-                              }}
-                              className="p-2 h-full"
-                            >
-                              <ProductCard product={product} />
+                            <div style={{ ...style }} className="p-2 h-full">
+                              <ProductCard
+                                product={product}
+                                onEdit={(prod) => {
+                                  setEditProduct(prod);
+                                  setModalOpen(true);
+                                }}
+                              />
                             </div>
                           );
                         }}
@@ -172,7 +204,7 @@ const ProductPage = () => {
           </div>
         </div>
 
-        <aside className="col-span-12 lg:col-span-3 bg-white dark:bg-[#23272f] dark:border dark:border-gray-700 p-6 rounded-2xl shadow-xl">
+        <aside className="col-span-12 lg:col-span-3  dark:bg-[#23272f] dark:border p-4 rounded-2xl shadow-xl bg-gradient-to-br from-indigo-50 via-white to-indigo-100  dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 border border-indigo-100 dark:border-gray-700  select-none">
           <FeaturedProducts />
         </aside>
       </div>
