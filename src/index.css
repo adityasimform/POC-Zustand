@@ -1,2 +1,16 @@
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
+
+
+.dark .scrollbar-dark::-webkit-scrollbar-thumb {
+  background: #374151;
+}
+.dark .scrollbar-dark::-webkit-scrollbar-track {
+  background: #1f2937;
+}
+
+input:-webkit-autofill,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+	-webkit-background-clip: text;
+}
