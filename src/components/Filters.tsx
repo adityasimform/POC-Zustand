@@ -1,25 +1,98 @@
-import React from "react";
+import { useMemo } from "react";
+import { useStore } from "../stores/store";
 
-const Filters: React.FC = () => {
+const FilterSidebar = () => {
+  const {
+    products,
+    priceRange,
+    minDiscount,
+    setFilters,
+    clearFilters,
+    selectedBrands,
+  } = useStore();
+
+  const [maxPrice] = useMemo(() => {
+    const prices = products.map((p) => p.price);
+    return [Math.max(...prices)];
+  }, [products]);
+
+  const uniqueBrands = [...new Set(products.map((p) => p.brand))].filter(
+    (b): b is string => typeof b === "string"
+  );
+
   return (
-    <div>
-      <h2 className="text-xl font-semibold text-gray-700 mb-4 dark:bg-gray-800 dark:text-white">Filters</h2>
-      <div className="space-y-4">
-        <label className="block">
-          <span className="text-sm text-gray-600 dark:bg-gray-800 dark:text-white">Category</span>
-          <select className="w-full border rounded-md p-2 mt-1 focus:ring focus:ring-indigo-300">
-            <option>All</option>
-            <option>Audio</option>
-            <option>Mobile</option>
-          </select>
-        </label>
-        <label className="block">
-          <span className="text-sm text-gray-600 dark:bg-gray-800 dark:text-white">Price Range</span>
-          <input type="range" className="w-full mt-2 accent-indigo-500" />
-        </label>
+    <aside className="col-span-12 lg:col-span-2 bg-white dark:bg-[#23272f] dark:border dark:border-gray-700 p-6 rounded-2xl shadow-xl">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-xl font-bold text-gray-700 dark:text-gray-100">
+          Filters
+        </h2>
+        <button
+          className="text-sm text-indigo-600 dark:text-indigo-400 hover:underline"
+          onClick={clearFilters}
+        >
+          Reset
+        </button>
       </div>
-    </div>
+
+      <div className="mb-6">
+        <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
+          Max Price: ₹{priceRange[1]}
+        </label>
+        <input
+          type="range"
+          min={0}
+          max={maxPrice}
+          value={priceRange[1]}
+          onChange={(e) =>
+            setFilters({ priceRange: [0, parseInt(e.target.value)] })
+          }
+          className="w-full accent-indigo-500"
+        />
+      </div>
+
+      <div className="mb-6">
+        <h3 className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-2">
+          Brands
+        </h3>
+        <div className="space-y-1 max-h-[150px] overflow-auto">
+          {uniqueBrands?.map((brand) => (
+            <label
+              key={brand}
+              className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200"
+            >
+              <input
+                type="checkbox"
+                checked={selectedBrands.includes(brand)}
+                onChange={(e) => {
+                  const newSelection = e.target.checked
+                    ? [...selectedBrands, brand]
+                    : selectedBrands.filter((b) => b !== brand);
+                  setFilters({ selectedBrands: newSelection });
+                }}
+              />
+              <span className="capitalize">{brand}</span>
+            </label>
+          ))}
+        </div>
+      </div>
+
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
+          Minimum Discount (%)
+        </label>
+        <input
+          type="number"
+          value={minDiscount}
+          min={0}
+          max={100}
+          className="w-full border rounded px-2 py-1 text-sm dark:bg-gray-700 dark:text-white dark:border-gray-600"
+          onChange={(e) =>
+            setFilters({ minDiscount: parseInt(e.target.value) })
+          }
+        />
+      </div>
+    </aside>
   );
 };
 
-export default Filters;
+export default FilterSidebar;

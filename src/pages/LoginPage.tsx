@@ -1,24 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, type FormEvent, type ChangeEvent } from "react";
 import Input from "../atoms/Input";
 import Button from "../atoms/Button";
-import { useNavigate, redirect } from "react-router";
+import { useNavigate } from "react-router";
 import { useStore } from "../stores/store";
 
 const LoginPage: React.FC = () => {
-  const login = useStore((state) => state.login);
-  const isLoggedIn = useStore((state) => state.isLoggedIn);
+  const login = useStore((state) => state.login) as (username: string, password: string) => Promise<void>;
+  const isLoggedIn = useStore((state) => state.isLoggedIn) as boolean;
 
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     await login(username, password);
     setLoading(false);
-    redirect("/");
+    navigate("/");
   };
 
   useEffect(() => {
@@ -38,7 +38,7 @@ const LoginPage: React.FC = () => {
           <Input
             label="Username"
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
             required
           />
         </div>
@@ -47,7 +47,7 @@ const LoginPage: React.FC = () => {
             type="password"
             label="Password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
             required
           />
         </div>

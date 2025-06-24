@@ -6,11 +6,11 @@ export interface Product {
   price: number;
   image: string;
   description?: string;
-  brand?: string;
+  brand: string;
   model?: string;
   color?: string;
   category?: string;
-  discount?: number;
+  discount: number;
   [key: string]: unknown;
 }
 
@@ -58,7 +58,6 @@ export const createProductSlice: StateCreator<productsState> = (set, get) => ({
       set({ error: message, loading: false });
     }
   },
-
   deleteProduct: (id) =>
     set((state) => ({
       products: state.products.filter((product) => product.id !== id),
@@ -72,5 +71,13 @@ export const createProductSlice: StateCreator<productsState> = (set, get) => ({
   addProduct: (product) =>
     set((state) => ({
       products: [...state.products, product],
+    })),
+  resetProducts: () =>
+    set(() => ({
+      products: [],
+      page: 0,
+      hasMore: true,
+      loading: false,
+      error: null,
     })),
 });
