@@ -1,5 +1,7 @@
+import { toast } from "sonner";
 import type { StateCreator } from "zustand";
 
+const API_URL = import.meta.env.VITE_API_URL;
 export interface Product {
   id: number;
   title: string;
@@ -19,9 +21,9 @@ export interface productsState {
   loading: boolean;
   error: string | null;
   fetchProducts: (start?: number, end?: number) => Promise<void>;
-  deleteProduct: (id: number) => void;
-  updateProduct: (product: Product) => void;
-  addProduct: (product: Product) => void;
+  deleteProduct: (id: number) => Promise<void>;
+  updateProduct: (product: Product) => Promise<void>;
+  addProduct: (product: Product) => Promise<void>;
   page: number;
   hasMore: boolean;
 }
@@ -40,7 +42,7 @@ export const createProductSlice: StateCreator<productsState> = (set, get) => ({
     try {
       const nextPage = page + 1;
       const res = await fetch(
-        `http://localhost:5000/products?_page=${nextPage}`
+        `${API_URL}/products?_page=${nextPage}`
       );
       const data = await res.json();
       const newData: Product[] = data.data;
@@ -51,17 +53,19 @@ export const createProductSlice: StateCreator<productsState> = (set, get) => ({
         hasMore: data.next !== null,
         loading: false,
       });
+      toast.success("Successfully fetched Products!");
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : "Failed to load products";
       console.error("Error fetching products:", message);
       set({ error: message, loading: false });
+      toast.error("Failed to fetch products!");
     }
   },
   deleteProduct: async (id: number) => {
     set({ loading: true, error: null });
     try {
-      const res = await fetch(`http://localhost:5000/products/${id}`, {
+      const res = await fetch(`${API_URL}/products/${id}`, {
         method: "DELETE",
       });
       if (!res.ok) throw new Error("Failed to delete product");
@@ -69,10 +73,12 @@ export const createProductSlice: StateCreator<productsState> = (set, get) => ({
         products: state.products.filter((product) => product.id !== id),
         loading: false,
       }));
+       toast.success("Product deleted successfully!");
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : "Failed to delete product";
       set({ error: message, loading: false });
+       toast.error("Product deletion failed!");
     }
   },
 
@@ -80,7 +86,7 @@ export const createProductSlice: StateCreator<productsState> = (set, get) => ({
   updateProduct: async (updated: Product) => {
     set({ loading: true, error: null });
     try {
-      const res = await fetch(`http://localhost:5000/products/${updated.id}`, {
+      const res = await fetch(`${API_URL}/products/${updated.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updated),
@@ -91,17 +97,19 @@ export const createProductSlice: StateCreator<productsState> = (set, get) => ({
         products: state.products.map((p) => (p.id === data.id ? data : p)),
         loading: false,
       }));
+      toast.success("Product updated successfully!");
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : "Failed to update product";
       set({ error: message, loading: false });
+       toast.error("Failed to update product!");
     }
   },
 
   addProduct: async (product: Product) => {
     set({ loading: true, error: null });
     try {
-      const res = await fetch(`http://localhost:5000/products`, {
+      const res = await fetch(`${API_URL}/products`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(product),
@@ -116,6 +124,7 @@ export const createProductSlice: StateCreator<productsState> = (set, get) => ({
       const message =
         err instanceof Error ? err.message : "Failed to add product";
       set({ error: message, loading: false });
+       toast.error("Failed to add product!");
     }
   },
   resetProducts: () =>
