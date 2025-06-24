@@ -13,17 +13,17 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onEdit }) => {
   const deleteProduct = useStore((state) => state.deleteProduct);
   const removeFromCart = useStore((state) => state.removeFromCart);
 
-  const handleDelete = (id: number) => {
-    deleteProduct(id);
+  const handleDelete = async (id: number) => {
+    await deleteProduct(id);
     removeFromCart(id);
   };
 
   return (
-<div
-  className="w-full bg-gradient-to-br from-indigo-50 via-white to-indigo-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 border border-indigo-100 dark:border-gray-700 rounded-2xl shadow-xl hover:shadow-2xl p-6 flex flex-col transition-transform hover:scale-[1.03] duration-200 h-full relative overflow-hidden group"
-  tabIndex={0}
-  aria-label={product.title}
->
+    <div
+      className="w-full bg-gradient-to-br from-indigo-50 via-white to-indigo-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 border border-indigo-100 dark:border-gray-700 rounded-2xl shadow-xl hover:shadow-2xl p-6 flex flex-col transition-transform hover:scale-[1.03] duration-200 h-full relative overflow-hidden group"
+      tabIndex={0}
+      aria-label={product.title}
+    >
       <img
         src={product.image || "https://via.placeholder.com/150"}
         alt={product.title}
@@ -44,27 +44,42 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onEdit }) => {
       </h2>
       <div className="flex flex-wrap gap-1 mb-1 overflow-hidden">
         {product.brand && (
-          <span className="text-xs bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 px-2 py-0.5 rounded truncate max-w-[80px] cursor-pointer" title={product.brand}>
+          <span
+            className="text-xs bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 px-2 py-0.5 rounded truncate max-w-[80px] cursor-pointer"
+            title={product.brand}
+          >
             {product.brand}
           </span>
         )}
         {product.model && (
-          <span className="text-xs bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 px-2 py-0.5 rounded truncate max-w-[80px] cursor-pointer" title={product.model}>
+          <span
+            className="text-xs bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 px-2 py-0.5 rounded truncate max-w-[80px] cursor-pointer"
+            title={product.model}
+          >
             {product.model}
           </span>
         )}
         {product.category && (
-          <span className="text-xs bg-indigo-100 dark:bg-indigo-800 text-indigo-700 dark:text-indigo-200 px-2 py-0.5 rounded truncate max-w-[80px] cursor-pointer" title={product.category}>
+          <span
+            className="text-xs bg-indigo-100 dark:bg-indigo-800 text-indigo-700 dark:text-indigo-200 px-2 py-0.5 rounded truncate max-w-[80px] cursor-pointer"
+            title={product.category}
+          >
             {product.category}
           </span>
         )}
         {product.color && (
-          <span className="text-xs bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 px-2 py-0.5 rounded truncate max-w-[80px] cursor-pointer" title={product.color}>
+          <span
+            className="text-xs bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 px-2 py-0.5 rounded truncate max-w-[80px] cursor-pointer"
+            title={product.color}
+          >
             {product.color}
           </span>
         )}
       </div>
-      <p className="text-sm text-gray-700 dark:text-gray-300 mb-2 line-clamp-2 break-words overflow-hidden" title={product.description}>
+      <p
+        className="text-sm text-gray-700 dark:text-gray-300 mb-2 line-clamp-2 break-words overflow-hidden"
+        title={product.description}
+      >
         {product.description}
       </p>
       <div className="flex items-center gap-2 mb-4">
@@ -82,7 +97,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onEdit }) => {
           type="button"
           onClick={(e) => {
             e.stopPropagation();
-            handleDelete(product.id);
+             handleDelete(product.id);
           }}
           className="bg-gray-100 dark:bg-gray-700 hover:bg-red-500 hover:text-white text-gray-700 dark:text-gray-300 transition-colors p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-red-400 cursor-pointer"
           title="Delete"

@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import type { StateCreator } from "zustand";
 
 export interface Product {
@@ -19,9 +20,9 @@ export interface productsState {
   loading: boolean;
   error: string | null;
   fetchProducts: (start?: number, end?: number) => Promise<void>;
-  deleteProduct: (id: number) => void;
-  updateProduct: (product: Product) => void;
-  addProduct: (product: Product) => void;
+  deleteProduct: (id: number) => Promise<void>;
+  updateProduct: (product: Product) => Promise<void>;
+  addProduct: (product: Product) => Promise<void>;
   page: number;
   hasMore: boolean;
 }
@@ -51,11 +52,13 @@ export const createProductSlice: StateCreator<productsState> = (set, get) => ({
         hasMore: data.next !== null,
         loading: false,
       });
+      toast.success("Successfully fetched Products!");
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : "Failed to load products";
       console.error("Error fetching products:", message);
       set({ error: message, loading: false });
+      toast.error("Failed to fetch products!");
     }
   },
   deleteProduct: async (id: number) => {
@@ -69,10 +72,12 @@ export const createProductSlice: StateCreator<productsState> = (set, get) => ({
         products: state.products.filter((product) => product.id !== id),
         loading: false,
       }));
+       toast.success("Product deleted successfully!");
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : "Failed to delete product";
       set({ error: message, loading: false });
+       toast.error("Product deletion failed!");
     }
   },
 
@@ -91,10 +96,12 @@ export const createProductSlice: StateCreator<productsState> = (set, get) => ({
         products: state.products.map((p) => (p.id === data.id ? data : p)),
         loading: false,
       }));
+      toast.success("Product updated successfully!");
     } catch (err: unknown) {
       const message =
         err instanceof Error ? err.message : "Failed to update product";
       set({ error: message, loading: false });
+       toast.error("Failed to update product!");
     }
   },
 
@@ -116,6 +123,7 @@ export const createProductSlice: StateCreator<productsState> = (set, get) => ({
       const message =
         err instanceof Error ? err.message : "Failed to add product";
       set({ error: message, loading: false });
+       toast.error("Failed to add product!");
     }
   },
   resetProducts: () =>

@@ -1,5 +1,6 @@
 import type { StateCreator } from "zustand";
 import type { Product } from "./productsSlice";
+import { toast } from "sonner";
 
 export interface CartItem extends Product {
   quantity: number;
@@ -29,6 +30,7 @@ export const createCartSlice: StateCreator<CartState> = (set) => ({
           ),
         };
       }
+      toast.success(`${product.title} added to cart!`);
       return { cart: [...state.cart, { ...product, quantity: 1 }] };
     }),
 

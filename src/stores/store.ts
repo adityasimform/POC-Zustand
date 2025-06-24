@@ -18,7 +18,7 @@ export const useStore = create<StoreState>()(
         ...createCartSlice(set, get, store),
         ...createFilterSlice(set, get, store),
       }),
-      { name: "zustand-store" }
+      { name: "zustand-store" } // the name of key by which it will store data in local storage storing
     )
   )
 );
