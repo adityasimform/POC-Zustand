@@ -1,6 +1,7 @@
 import { toast } from "sonner";
 import type { StateCreator } from "zustand";
 
+const API_URL = import.meta.env.VITE_API_URL;
 export interface Product {
   id: number;
   title: string;
@@ -41,7 +42,7 @@ export const createProductSlice: StateCreator<productsState> = (set, get) => ({
     try {
       const nextPage = page + 1;
       const res = await fetch(
-        `http://localhost:5000/products?_page=${nextPage}`
+        `${API_URL}/products?_page=${nextPage}`
       );
       const data = await res.json();
       const newData: Product[] = data.data;
@@ -64,7 +65,7 @@ export const createProductSlice: StateCreator<productsState> = (set, get) => ({
   deleteProduct: async (id: number) => {
     set({ loading: true, error: null });
     try {
-      const res = await fetch(`http://localhost:5000/products/${id}`, {
+      const res = await fetch(`${API_URL}/products/${id}`, {
         method: "DELETE",
       });
       if (!res.ok) throw new Error("Failed to delete product");
@@ -85,7 +86,7 @@ export const createProductSlice: StateCreator<productsState> = (set, get) => ({
   updateProduct: async (updated: Product) => {
     set({ loading: true, error: null });
     try {
-      const res = await fetch(`http://localhost:5000/products/${updated.id}`, {
+      const res = await fetch(`${API_URL}/products/${updated.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updated),
@@ -108,7 +109,7 @@ export const createProductSlice: StateCreator<productsState> = (set, get) => ({
   addProduct: async (product: Product) => {
     set({ loading: true, error: null });
     try {
-      const res = await fetch(`http://localhost:5000/products`, {
+      const res = await fetch(`${API_URL}/products`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(product),
