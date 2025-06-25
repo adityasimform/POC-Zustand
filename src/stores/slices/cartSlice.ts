@@ -1,6 +1,6 @@
-import type { StateCreator } from "zustand";
 import type { Product } from "./productsSlice";
 import { toast } from "sonner";
+import type { WithImmer } from "../types/immer";
 
 export interface CartItem extends Product {
   quantity: number;
@@ -15,61 +15,51 @@ export interface CartState {
   clearCart: () => void;
 }
 
-export const createCartSlice: StateCreator<CartState> = (set) => ({
+export const createCartSlice: WithImmer<CartState> = (set) => ({
   cart: [],
 
   addToCart: (product) =>
     set((state) => {
       const existingItem = state.cart.find((item) => item.id === product.id);
       if (existingItem) {
-        return {
-          cart: state.cart.map((item) =>
-            item.id === product.id
-              ? { ...item, quantity: item.quantity + 1 }
-              : item
-          ),
-        };
+        existingItem.quantity += 1;
+      } else {
+        state.cart.push({ ...product, quantity: 1 });
+        toast.success(`${product.title} added to cart!`);
       }
-      toast.success(`${product.title} added to cart!`);
-      return { cart: [...state.cart, { ...product, quantity: 1 }] };
     }),
 
   removeFromCart: (id) =>
-    set((state) => ({
-      cart: state.cart.filter((item) => item.id !== id),
-    })),
+    set((state) => {
+      state.cart = state.cart.filter((item) => item.id !== id);
+    }),
 
   increaseQuantity: (id) =>
     set((state) => {
-      const existingItem = state.cart.find((item) => item.id === id);
-      if (!existingItem) {
+      const item = state.cart.find((item) => item.id === id);
+      if (item) {
+        item.quantity += 1;
+      } else {
         console.error(`Product with id ${id} not found in the cart.`);
-        return state;
       }
-      return {
-        cart: state.cart.map((item) =>
-          item.id === id ? { ...item, quantity: item.quantity + 1 } : item
-        ),
-      };
     }),
 
   decreaseQuantity: (id) =>
     set((state) => {
-      const existingItem = state.cart.find((item) => item.id === id);
-      if (!existingItem) {
+      const item = state.cart.find((item) => item.id === id);
+      if (!item) {
         console.error(`Product with id ${id} not found in the cart.`);
-        return state;
+        return;
       }
-      if (existingItem.quantity === 1) {
+      if (item.quantity === 1) {
         console.warn(`Cannot decrease quantity below 1 for product id ${id}.`);
-        return state;
+        return;
       }
-      return {
-        cart: state.cart.map((item) =>
-          item.id === id ? { ...item, quantity: item.quantity - 1 } : item
-        ),
-      };
+      item.quantity -= 1;
     }),
 
-  clearCart: () => set({ cart: [] }),
+  clearCart: () =>
+    set((state) => {
+      state.cart = [];
+    }),
 });
