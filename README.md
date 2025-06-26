@@ -1,54 +1,161 @@
-# React + TypeScript + Vite
+# Zustand POC – Documentation
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
 
-Currently, two official plugins are available:
+This project is a Product Dashboard built with **React**, **TypeScript**, **Vite**, **Tailwind CSS**, and **Zustand** for state management.  
+It demonstrates modular state management using Zustand slices, persistent state, UI theming, and a clean, scalable architecture.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+## Table of Contents
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- [Project Structure](#project-structure)
+- [State Management with Zustand](#state-management-with-zustand)
+  - [Store Setup](#store-setup)
+  - [Slices](#slices)
+- [UI Components](#ui-components)
+- [Theming](#theming)
+- [Persistence & Middleware](#persistence--middleware)
+- [Notifications](#notifications)
+- [Best Practices](#best-practices)
+- [How to Run](#how-to-run)
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+---
+
+## Project Structure
+
+```
+src/
+  atoms/           # Small, reusable UI elements (Button, Input)
+  components/      # Feature components (ProductCard, Filters, Modal, etc.)
+  organisms/       # Larger UI sections (Topbar)
+  pages/           # Route-level components (Products, LoginPage, Home)
+  stores/          # Zustand store and slices
+  HOC/             # Higher-order components (ThemeWatcher)
+  assets/          # Static assets
+  App.tsx          # App entry point
+  Layout.tsx       # Main layout with theming
+  main.tsx         # React root, Toaster, ThemeWatcher
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## State Management with Zustand
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+### Store Setup
+
+The global store is defined in [`src/stores/store.ts`](src/stores/store.ts):
+
+- Combines multiple **slices** (auth, UI, products, cart, filters) into a single store.
+- Uses Zustand middleware for **devtools**, **persistence**, and **immer** (for immutable updates).
+
+```ts
+export const useStore = create<StoreState>()(
+  devtools(
+    persist(
+      (set, get, store) => ({
+        ...createAuthSlice(set, get, store),
+        ...createUISlice(set, get, store),
+        ...immer(createProductSlice)(set, get, store),
+        ...immer(createCartSlice)(set, get, store),
+        ...immer(createFilterSlice)(set, get, store),
+      }),
+      { name: "zustand-store" }
+    )
+  )
+);
 ```
+
+### Slices
+
+Each slice manages a feature’s state and actions:
+
+- **Auth Slice** ([`src/stores/slices/authSlice.ts`](src/stores/slices/authSlice.ts)):  
+  Handles login, logout, and authentication state.
+- **UI Slice** ([`src/stores/slices/uiSlice.ts`](src/stores/slices/uiSlice.ts)):  
+  Manages UI state like dark mode.
+- **Product Slice** ([`src/stores/slices/productsSlice.ts`](src/stores/slices/productsSlice.ts)):  
+  Fetches, adds, edits, deletes, and paginates products.
+- **Cart Slice** ([`src/stores/slices/cartSlice.ts`](src/stores/slices/cartSlice.ts)):  
+  Manages cart items, quantities, and cart actions.
+- **Filter Slice** ([`src/stores/slices/filterSlice.ts`](src/stores/slices/filterSlice.ts)):  
+  Handles product filtering (price, brand, discount).
+
+---
+
+## UI Components
+
+- **ProductCard** ([`src/components/ProductCard.tsx`](src/components/ProductCard.tsx)):  
+  Displays product info, edit/delete/add-to-cart buttons.
+- **AddProductModal** ([`src/components/AddProductModal.tsx`](src/components/AddProductModal.tsx)):  
+  Modal for adding/editing products.
+- **Filters** ([`src/components/Filters.tsx`](src/components/Filters.tsx)):  
+  Sidebar for filtering products by price, brand, discount.
+- **FeaturedProducts** ([`src/components/FeaturedProducts.tsx`](src/components/FeaturedProducts.tsx)):  
+  Shows cart items and allows quantity adjustments.
+- **Topbar** ([`src/organisms/Topbar.tsx`](src/organisms/Topbar.tsx)):  
+  Navigation and theme toggle.
+
+---
+
+## Theming
+
+- **Dark mode** is managed globally via Zustand (`darkMode` in UI slice).
+- The [`ThemeWatcher`](src/HOC/ThemeWatcher.tsx) HOC syncs the Zustand dark mode state with the HTML root class.
+- All components use Tailwind’s `dark:` classes for seamless theming.
+
+---
+
+## Persistence & Middleware
+
+- **Persistence:**  
+  Zustand’s `persist` middleware saves the store to localStorage (`zustand-store` key).
+- **Devtools:**  
+  Zustand’s `devtools` middleware enables Redux DevTools integration.
+- **Immer:**  
+  Used for immutable state updates in slices.
+
+---
+
+## Notifications
+
+- Uses [sonner](https://sonner.emilkowal.ski/) for toast notifications.
+- `<Toaster />` is added in [`src/main.tsx`](src/main.tsx) for global notifications.
+- Toasts are triggered for product add/edit/delete, fetch errors, and cart actions.
+
+---
+
+## Best Practices
+
+- **Modular Slices:** Each feature’s state and logic is isolated.
+- **Type Safety:** All state and actions are typed with TypeScript.
+- **UI Feedback:** Toasts provide instant feedback for user actions.
+- **Dark Mode:** Consistent theming across the app.
+- **Selectors:** Use selectors in `useStore` to avoid unnecessary re-renders.
+
+---
+
+## How to Run
+
+1. **Install dependencies:**
+   ```sh
+   npm install
+   ```
+2. **Start the dev server:**
+   ```sh
+   npm run dev
+   ```
+3. **Open [http://localhost:5173](http://localhost:5173) in your browser.**
+
+---
+
+## Credits
+
+- [Zustand](https://github.com/pmndrs/zustand)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Sonner](https://sonner.emilkowal.ski/)
+- [Vite](https://vitejs.dev/)
+
+---
+
+For any questions, check the code in the [`src/stores`](src/stores/store.ts) folder or reach out to the maintainer.
